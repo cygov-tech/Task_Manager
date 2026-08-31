@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Task Manager</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-header-top">
+      <h1>Task Manager</h1>
+      <div class="header-controls">
+        <button id="back-btn" class="small-btn" title="Back to previous page" disabled>&larr; Back</button>
+        <div class="view-toggle" id="owner-filter-toggle">
+          <button class="view-toggle-btn" data-owner-filter="mine">Mine</button>
+          <button class="view-toggle-btn active" data-owner-filter="everyone">Everyone's</button>
+        </div>
+        <div id="current-user-badge" class="current-user-badge"></div>
+        <button id="stop-server-btn" class="danger small-btn">Stop Server</button>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="daily-goals">Daily Goals</button>
+      <button class="tab-btn" data-tab="tasks">Task Manager</button>
+      <button class="tab-btn" data-tab="prioritization">Prioritization</button>
+      <button class="tab-btn" data-tab="bugs">Bug Tracking</button>
+      <button class="tab-btn" data-tab="recurring-tasks">Recurring Tasks</button>
+      <button class="tab-btn" data-tab="checklists">Checklists</button>
+      <button class="tab-btn" data-tab="notebook">Notebook</button>
+      <button class="tab-btn" data-tab="options">Dropdown Options</button>
+      <button class="tab-btn" data-tab="activity-log">Activity Log</button>
+      <button class="tab-btn" data-tab="weekly-summary">Weekly Summary</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- TASK MANAGER -->
+    <section id="tasks" class="tab-panel">
+      <div class="panel-toolbar">
+        <form id="new-task-form" class="inline-form">
+          <input type="text" id="new-task-name" placeholder="New task / project name" required />
+          <select id="new-task-type"></select>
+          <select id="new-task-visibility"></select>
+          <button type="submit">Add Task</button>
+        </form>
+      </div>
+      <div id="tasks-progress"></div>
+      <div class="table-filters" id="tasks-filters"></div>
+      <div class="table-scroll sticky-cols">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Task / Project Name</th>
+            <th data-sort-table="tasks" data-sort-field="status" data-sort-colorable="true">Status</th>
+            <th data-sort-table="tasks" data-sort-field="type" data-sort-colorable="true">Type</th>
+            <th data-sort-table="tasks" data-sort-field="loe">LOE (days)</th>
+            <th data-sort-table="tasks" data-sort-field="deadline">Deadline</th>
+            <th data-sort-table="tasks" data-sort-field="date">Start Date</th>
+            <th>Trello Card</th>
+            <th data-sort-table="tasks" data-sort-field="owner">Owner</th>
+            <th data-sort-table="tasks" data-sort-field="visibility">Visibility</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tasks-tbody"></tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- PRIORITIZATION -->
+    <section id="prioritization" class="tab-panel">
+      <p class="hint">Prioritize existing projects/tasks with effort and deadline. Deadlines show up automatically on the Daily Goals calendar. Add new projects from the Task Manager tab.</p>
+      <div class="table-filters" id="prioritization-filters"></div>
+      <div class="table-scroll sticky-cols">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Project / Task Name</th>
+            <th data-sort-table="prioritization" data-sort-field="priority" data-sort-colorable="true">Priority</th>
+            <th data-sort-table="prioritization" data-sort-field="loe">LOE (days)</th>
+            <th data-sort-table="prioritization" data-sort-field="deadline">Deadline</th>
+            <th data-sort-table="prioritization" data-sort-field="date">Start Date</th>
+            <th>Comments</th>
+            <th data-sort-table="prioritization" data-sort-field="status" data-sort-colorable="true">Status</th>
+            <th data-sort-table="prioritization" data-sort-field="owner">Owner</th>
+            <th data-sort-table="prioritization" data-sort-field="visibility">Visibility</th>
+          </tr>
+        </thead>
+        <tbody id="prioritization-tbody"></tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- BUG TRACKING -->
+    <section id="bugs" class="tab-panel">
+      <div class="panel-toolbar">
+        <form id="new-bug-form" class="inline-form">
+          <input type="text" id="new-bug-title" placeholder="Bug title" required />
+          <select id="new-bug-type"></select>
+          <select id="new-bug-severity"></select>
+          <select id="new-bug-visibility"></select>
+          <button type="submit">Add Bug</button>
+        </form>
+      </div>
+      <div class="table-filters" id="bugs-filters"></div>
+      <div class="table-scroll sticky-cols">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Bug Title</th>
+            <th>Trello Card</th>
+            <th data-sort-table="bugs" data-sort-field="type" data-sort-colorable="true">Type</th>
+            <th data-sort-table="bugs" data-sort-field="severity" data-sort-colorable="true">Severity</th>
+            <th data-sort-table="bugs" data-sort-field="loe">LOE (days)</th>
+            <th data-sort-table="bugs" data-sort-field="deadline">Deadline</th>
+            <th data-sort-table="bugs" data-sort-field="date">Start Date</th>
+            <th>Comments</th>
+            <th data-sort-table="bugs" data-sort-field="status" data-sort-colorable="true">Status</th>
+            <th data-sort-table="bugs" data-sort-field="owner">Owner</th>
+            <th data-sort-table="bugs" data-sort-field="visibility">Visibility</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="bugs-tbody"></tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- DAILY GOALS -->
+    <section id="daily-goals" class="tab-panel active">
+      <div class="panel-toolbar">
+        <div class="view-toggle">
+          <button class="view-toggle-btn active" data-view="week">Week View</button>
+          <button class="view-toggle-btn" data-view="month">Month View</button>
+        </div>
+      </div>
+
+      <!-- WEEK VIEW -->
+      <div id="week-view" class="daily-view active">
+        <div class="panel-toolbar">
+          <button id="prev-week-btn">&larr; Previous Week</button>
+          <button id="today-week-btn">This Week</button>
+          <button id="next-week-btn">Next Week &rarr;</button>
+        </div>
+        <div id="week-header" class="week-header"></div>
+        <div id="daily-goals-days"></div>
+      </div>
+
+      <!-- MONTH VIEW -->
+      <div id="month-view" class="daily-view">
+        <div class="panel-toolbar">
+          <button id="prev-month-btn">&larr; Previous Month</button>
+          <button id="today-month-btn">This Month</button>
+          <button id="next-month-btn">Next Month &rarr;</button>
+          <h2 id="month-label" class="month-label"></h2>
+        </div>
+        <div id="month-grid" class="month-grid"></div>
+      </div>
+    </section>
+
+    <!-- RECURRING TASKS -->
+    <section id="recurring-tasks" class="tab-panel">
+      <p class="hint">Set up tasks that repeat daily, weekly, monthly, or at the end of every month. They show up automatically on the Daily Goals calendar so you can check them off each day.</p>
+      <div class="panel-toolbar">
+        <form id="new-recurring-form" class="inline-form">
+          <input type="text" id="new-recurring-name" placeholder="Recurring task name" required />
+          <select id="new-recurring-frequency"></select>
+          <div id="new-recurring-weekdays" class="weekday-picker"></div>
+          <div id="new-recurring-monthdays" class="monthday-picker"></div>
+          <input type="time" id="new-recurring-time" title="Time of day (optional)" />
+          <input type="text" id="new-recurring-comments" placeholder="Comments (optional)" />
+          <select id="new-recurring-visibility"></select>
+          <button type="submit">Add Recurring Task</button>
+        </form>
+      </div>
+      <div class="table-filters" id="recurring-tasks-filters"></div>
+      <div class="table-scroll sticky-cols">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th data-sort-table="recurringTasks" data-sort-field="name">Name</th>
+            <th data-sort-table="recurringTasks" data-sort-field="frequency">Frequency</th>
+            <th>Details</th>
+            <th>Time</th>
+            <th>Comments</th>
+            <th>Active</th>
+            <th>Checklist</th>
+            <th data-sort-table="recurringTasks" data-sort-field="owner">Owner</th>
+            <th data-sort-table="recurringTasks" data-sort-field="visibility">Visibility</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="recurring-tasks-tbody"></tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- CHECKLISTS -->
+    <section id="checklists" class="tab-panel">
+      <p class="hint">Create reusable checklist templates (e.g. "Update Questionnaire Checklist"). Open any sub-task in a task's detail view to apply a template or build a one-off checklist right there.</p>
+      <div class="panel-toolbar">
+        <form id="new-checklist-form" class="inline-form">
+          <input type="text" id="new-checklist-name" placeholder="Checklist name" required />
+          <select id="new-checklist-visibility"></select>
+          <button type="submit">Add Checklist</button>
+        </form>
+      </div>
+      <div id="checklists-list"></div>
+    </section>
+
+    <!-- NOTEBOOK -->
+    <section id="notebook" class="tab-panel">
+      <p class="hint">Jot down personal notes and things you want to remember. Notes are private to you by default.</p>
+      <div class="panel-toolbar">
+        <form id="new-note-form" class="inline-form">
+          <input type="text" id="new-note-title" placeholder="Note title" required />
+          <select id="new-note-visibility"></select>
+          <button type="submit">Add Note</button>
+        </form>
+      </div>
+      <div id="notebook-list"></div>
+    </section>
+
+    <!-- DROPDOWN OPTIONS -->
+    <section id="options" class="tab-panel">
+      <p class="hint">Add, rename, or remove the values available in the Status, Type, and Priority/Severity dropdowns for Task Manager and Bug Tracking. (LOE is now entered directly as a number of days. Recurring Task frequency and Visibility are fixed and can't be changed here.)</p>
+      <div id="options-list"></div>
+    </section>
+
+    <!-- ACTIVITY LOG -->
+    <section id="activity-log" class="tab-panel">
+      <div class="table-scroll">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Entity</th>
+            <th>Label</th>
+            <th>Field</th>
+            <th>Old Value</th>
+            <th>New Value</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody id="activity-log-tbody"></tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- WEEKLY SUMMARY -->
+    <section id="weekly-summary" class="tab-panel">
+      <div class="panel-toolbar">
+        <button id="generate-summary-btn">Generate Weekly Summary</button>
+        <span id="openai-status" class="hint"></span>
+      </div>
+      <div id="weekly-summary-list"></div>
+    </section>
+  </main>
+
+  <!-- TASK DETAIL MODAL -->
+  <div id="task-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <button class="modal-close" id="task-modal-close">&times;</button>
+      <h2 id="modal-task-name">Task</h2>
+
+      <div class="modal-section">
+        <label>Structured Comment
+          <button id="generate-comment-btn" class="small-btn">Generate</button>
+        </label>
+        <textarea id="modal-structured-comment" rows="10"></textarea>
+        <button id="save-comment-btn" class="small-btn">Save Comment</button>
+        <div id="modal-structured-comment-preview" class="comment-preview"></div>
+      </div>
+
+      <div class="modal-section">
+        <h3>Task Breakdown</h3>
+        <form id="new-breakdown-form" class="inline-form">
+          <input type="text" id="new-breakdown-name" placeholder="Name of thing" required />
+          <button type="submit">Add Item</button>
+        </form>
+        <div class="table-scroll">
+        <table class="data-table small">
+          <thead>
+            <tr>
+              <th>Done</th>
+              <th>Name of Thing</th>
+              <th>Status</th>
+              <th>Notes</th>
+              <th>Checklist</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="breakdown-tbody"></tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECURRING TASK CHECKLIST MODAL -->
+  <div id="recurring-checklist-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <button class="modal-close" id="recurring-checklist-modal-close">&times;</button>
+      <h2 id="recurring-checklist-modal-name">Checklist</h2>
+      <div class="modal-section" id="recurring-checklist-content"></div>
+    </div>
+  </div>
+
+  <!-- TEAM MEMBER NAME MODAL -->
+  <div id="user-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <button class="modal-close hidden" id="user-modal-close">&times;</button>
+      <h2>Who's working?</h2>
+      <p class="hint">Enter your name so your changes are attributed to you in the Activity Log. This is saved on this device only &mdash; no password needed.</p>
+      <form id="user-form" class="inline-form">
+        <input type="text" id="user-name-input" placeholder="Your name" required autocomplete="name" />
+        <button type="submit">Continue</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DAY DETAIL MODAL (used by Month View) -->
+  <div id="day-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <button class="modal-close" id="day-modal-close">&times;</button>
+      <h2 id="day-modal-title">Day</h2>
+      <div id="day-modal-content"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

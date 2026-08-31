@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Redesign Mockup (not part of the app)</title>
+<style>
+  :root { --navy: #2c4a68; --navy-dark: #1f374f; --border: #dfe3e7; --green: #6aa84f; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, Segoe UI, Roboto, sans-serif; background: #dfe4e8; color: #1a1a1a; padding: 24px 0; }
+  h2.page-title { text-align: center; color: #445; font-size: 15px; margin: 0 0 10px; text-transform: uppercase; letter-spacing: .05em; }
+  .frame { max-width: 480px; margin: 0 auto 40px; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.12); }
+  .frame.desktop { max-width: 900px; }
+
+  /* --- Header / nav --- */
+  header { background: var(--navy); color: #fff; padding: 14px 16px 0; }
+  .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .brand { font-weight: 800; font-size: 20px; }
+  .user-chip { font-size: 12px; background: rgba(255,255,255,.12); padding: 5px 10px; border-radius: 20px; }
+  nav.tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+  nav.tabs::-webkit-scrollbar { display: none; }
+  .tab { flex: none; padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,.1); color: #dbe6f0; white-space: nowrap; }
+  .tab.active { background: #fff; color: var(--navy); }
+  .tab.more { background: rgba(255,255,255,.1); }
+
+  /* --- Dashboard summary --- */
+  .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 14px 16px; background: #eef2f5; }
+  .dashboard.four { grid-template-columns: repeat(4, 1fr); }
+  .stat-card { background: #fff; border-radius: 10px; padding: 12px; border: 1px solid var(--border); }
+  .stat-card .stat-label { font-size: 11px; color: #667; text-transform: uppercase; letter-spacing: .04em; font-weight: 700; }
+  .stat-card .stat-value { font-size: 22px; font-weight: 800; color: var(--navy); margin: 4px 0 6px; }
+  .stat-card .stat-value.small { font-size: 18px; }
+  .mini-track { height: 6px; background: #e3e8ec; border-radius: 4px; overflow: hidden; }
+  .mini-fill { height: 100%; background: var(--navy); border-radius: 4px; }
+  .mini-fill.green { background: var(--green); }
+  .mini-fill.red { background: #cc4125; }
+  .mini-fill.orange { background: #e69138; }
+
+  /* --- Section --- */
+  .section-title { padding: 16px 16px 6px; font-size: 13px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .03em; display: flex; justify-content: space-between; align-items: center; }
+  .toggle-pair { display: flex; background: #eef2f5; border-radius: 8px; padding: 2px; font-size: 11px; font-weight: 700; }
+  .toggle-pair span { padding: 4px 10px; border-radius: 6px; color: #667; }
+  .toggle-pair span.active { background: var(--navy); color: #fff; }
+
+  /* --- Card-view rows (replaces wide table on mobile) --- */
+  .task-card { margin: 0 16px 10px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: #fff; }
+  .task-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .task-name { font-weight: 700; color: var(--navy); font-size: 14.5px; }
+  .badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; white-space: nowrap; }
+  .task-card-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-items: center; }
+  .task-card-progress { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .progress-track { flex: 1; height: 8px; background: #e3e8ec; border-radius: 5px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green); border-radius: 5px; }
+  .progress-fill.red { background: #cc4125; }
+  .progress-pct { font-size: 11px; font-weight: 700; color: #666; min-width: 32px; text-align: right; }
+  .task-card-footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11.5px; color: #778; }
+  .swipe-hint { display: flex; justify-content: flex-end; gap: 6px; margin: -2px 16px 12px 0; }
+  .swipe-btn { font-size: 10px; background: #f4cccc; color: #990000; padding: 3px 8px; border-radius: 10px; font-weight: 700; }
+
+  /* --- Desktop table w/ sticky + unified progress col --- */
+  table.mock-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.mock-table th { background: #d9eaf7; text-align: left; padding: 9px 10px; position: sticky; top: 0; }
+  table.mock-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  table.mock-table tr:hover td { background: #f7fafc; }
+  .cell-progress { display: flex; align-items: center; gap: 6px; }
+  .cell-progress .progress-track { width: 60px; flex: none; }
+
+  /* --- Filter chips row --- */
+  .filter-row { display: flex; gap: 6px; padding: 0 16px 12px; flex-wrap: wrap; }
+  .chip { font-size: 11.5px; font-weight: 600; padding: 5px 12px; border-radius: 20px; background: #eef2f5; color: #445; border: 1px solid var(--border); }
+  .chip.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+  /* --- Empty/loading skeleton --- */
+  .skeleton { background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%); background-size: 200% 100%; border-radius: 6px; }
+
+  footer.note { padding: 14px 16px 20px; font-size: 12px; color: #889; text-align: center; }
+</style>
+</head>
+<body>
+
+<h2 class="page-title">1 — Daily Goals: Dashboard Summary + Compact Nav</h2>
+<div class="frame">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab active">Daily Goals</div>
+      <div class="tab">Tasks</div>
+      <div class="tab">Prioritization</div>
+      <div class="tab">Bugs</div>
+      <div class="tab">Recurring</div>
+      <div class="tab more">More ⋯</div>
+    </nav>
+  </header>
+
+  <div class="dashboard four">
+    <div class="stat-card">
+      <div class="stat-label">This Week</div>
+      <div class="stat-value small">40%</div>
+      <div class="mini-track"><div class="mini-fill" style="width:40%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Tasks Done</div>
+      <div class="stat-value small">1/8</div>
+      <div class="mini-track"><div class="mini-fill green" style="width:13%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Bugs Open</div>
+      <div class="stat-value small">6</div>
+      <div class="mini-track"><div class="mini-fill red" style="width:70%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Due Soon</div>
+      <div class="stat-value small">3</div>
+      <div class="mini-track"><div class="mini-fill orange" style="width:45%"></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Today — Wednesday, Aug 26</div>
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Continue the reg watch checklist</div>
+      <div class="badge" style="background:#d9ead3;color:#274e13;">Goal</div>
+    </div>
+    <div class="task-card-meta">
+      <span style="font-size:11.5px;color:#778;">No linked task</span>
+    </div>
+  </div>
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Update Specific Frameworks</div>
+      <div class="badge" style="background:#fff2cc;color:#7f6000;">In the Middle</div>
+    </div>
+    <div class="task-card-progress">
+      <div class="progress-track"><div class="progress-fill" style="width:59%"></div></div>
+      <div class="progress-pct">59%</div>
+    </div>
+  </div>
+
+  <footer class="note">Compact scrollable nav + 4-stat dashboard replace the tall stacked buttons.</footer>
+</div>
+
+<h2 class="page-title">2 — Task Manager: Mobile Card View (vs. wide table)</h2>
+<div class="frame">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab">Daily Goals</div>
+      <div class="tab active">Tasks</div>
+      <div class="tab">Prioritization</div>
+      <div class="tab">Bugs</div>
+    </nav>
+  </header>
+
+  <div class="section-title">
+    8 Tasks
+    <div class="toggle-pair"><span>Table</span><span class="active">Cards</span></div>
+  </div>
+
+  <div class="filter-row">
+    <div class="chip active">All Statuses</div>
+    <div class="chip">Didn't Start</div>
+    <div class="chip">In the Middle</div>
+    <div class="chip">Done</div>
+  </div>
+
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Update Specific Frameworks</div>
+      <div class="badge" style="background:#fff2cc;color:#7f6000;">In the Middle</div>
+    </div>
+    <div class="task-card-meta">
+      <div class="badge" style="background:#f4cccc;color:#990000;">Medium</div>
+      <span style="font-size:11.5px;color:#778;">Task · LOE 20d</span>
+    </div>
+    <div class="task-card-progress">
+      <div class="progress-track"><div class="progress-fill" style="width:59%"></div></div>
+      <div class="progress-pct">59%</div>
+    </div>
+    <div class="task-card-footer">
+      <span>Owner: Shifra</span>
+      <span>Deadline: 17/09</span>
+    </div>
+  </div>
+
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Track all the beecher bugs</div>
+      <div class="badge" style="background:#f4cccc;color:#990000;">Didn't Start</div>
+    </div>
+    <div class="task-card-meta">
+      <div class="badge" style="background:#fff2cc;color:#7f6000;">Low</div>
+      <span style="font-size:11.5px;color:#778;">Task · LOE 0d</span>
+    </div>
+    <div class="task-card-progress">
+      <div class="progress-track"><div class="progress-fill" style="width:27%"></div></div>
+      <div class="progress-pct">27%</div>
+    </div>
+    <div class="task-card-footer">
+      <span>Owner: Shifra</span>
+      <span>Checklist 3/11</span>
+    </div>
+  </div>
+
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">QA the new ai agent on reg watch dev</div>
+      <div class="badge" style="background:#f4cccc;color:#990000;">Didn't Start</div>
+    </div>
+    <div class="task-card-meta">
+      <div class="badge" style="background:#fff2cc;color:#7f6000;">Medium</div>
+      <span style="font-size:11.5px;color:#778;">Task · LOE 1d</span>
+    </div>
+    <div class="task-card-footer">
+      <span>Owner: Shifra</span>
+      <span>Deadline: 23/08</span>
+    </div>
+  </div>
+
+  <footer class="note">"Cards" toggle swaps in this stacked layout below a set width; "Table" keeps today's frozen-column table for desktop.</footer>
+</div>
+
+<h2 class="page-title">3 — Bug Tracking: Swipeable Card w/ Severity + Quick Actions</h2>
+<div class="frame">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab">Daily Goals</div>
+      <div class="tab">Tasks</div>
+      <div class="tab">Prioritization</div>
+      <div class="tab active">Bugs</div>
+    </nav>
+  </header>
+
+  <div class="filter-row" style="padding-top:14px;">
+    <div class="chip active">All Severities</div>
+    <div class="chip">High</div>
+    <div class="chip">Medium</div>
+    <div class="chip">Low</div>
+  </div>
+
+  <div class="task-card" style="border-left:4px solid #cc4125;">
+    <div class="task-card-top">
+      <div class="task-name">email tracking of site description (Bug)</div>
+      <div class="badge" style="background:#f9cb9c;color:#7f4a00;">High</div>
+    </div>
+    <div class="task-card-meta">
+      <div class="badge" style="background:#d9ead3;color:#274e13;">Done</div>
+      <span style="font-size:11.5px;color:#778;">BEECHER</span>
+    </div>
+    <div class="task-card-footer">
+      <span>Owner: Shifra</span>
+      <span>No deadline</span>
+    </div>
+  </div>
+  <div class="swipe-hint"><span class="swipe-btn">← swipe to delete</span></div>
+
+  <div class="task-card" style="border-left:4px solid #e69138;">
+    <div class="task-card-top">
+      <div class="task-name">change request for card in reg watch (Bug)</div>
+      <div class="badge" style="background:#d9ead3;color:#274e13;">Low</div>
+    </div>
+    <div class="task-card-meta">
+      <div class="badge" style="background:#f4cccc;color:#990000;">Didn't Start</div>
+      <span style="font-size:11.5px;color:#778;">Regular</span>
+    </div>
+    <div class="task-card-footer">
+      <span>Owner: Shifra</span>
+      <span>Deadline: 25/08</span>
+    </div>
+  </div>
+
+  <footer class="note">Left border = severity at a glance; swipe-to-delete replaces the cramped "Delete" column button.</footer>
+</div>
+
+<h2 class="page-title">4 — Desktop: Unified Progress Column Across Tables</h2>
+<div class="frame desktop">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab">Daily Goals</div>
+      <div class="tab active">Tasks</div>
+      <div class="tab">Prioritization</div>
+      <div class="tab">Bugs</div>
+      <div class="tab">Recurring</div>
+      <div class="tab more">More ⋯</div>
+    </nav>
+  </header>
+  <table class="mock-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Task / Project Name</th>
+        <th>Status</th>
+        <th>Priority</th>
+        <th>Progress</th>
+        <th>Owner</th>
+        <th>Deadline</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td style="color:var(--navy);font-weight:700;">Update Specific Frameworks</td>
+        <td><span class="badge" style="background:#fff2cc;color:#7f6000;">In the Middle</span></td>
+        <td><span class="badge" style="background:#f4cccc;color:#990000;">Medium</span></td>
+        <td><div class="cell-progress"><div class="progress-track"><div class="progress-fill" style="width:59%"></div></div><span class="progress-pct">59%</span></div></td>
+        <td>Shifra</td>
+        <td>17/09/2026</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td style="color:var(--navy);font-weight:700;">Track all the beecher bugs</td>
+        <td><span class="badge" style="background:#f4cccc;color:#990000;">Didn't Start</span></td>
+        <td><span class="badge" style="background:#fff2cc;color:#7f6000;">Low</span></td>
+        <td><div class="cell-progress"><div class="progress-track"><div class="progress-fill" style="width:27%"></div></div><span class="progress-pct">27%</span></div></td>
+        <td>Shifra</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td style="color:var(--navy);font-weight:700;">QA the new ai agent on reg watch dev</td>
+        <td><span class="badge" style="background:#f4cccc;color:#990000;">Didn't Start</span></td>
+        <td><span class="badge" style="background:#fff2cc;color:#7f6000;">Medium</span></td>
+        <td><div class="cell-progress"><div class="progress-track"><div class="progress-fill" style="width:0%"></div></div><span class="progress-pct">0%</span></div></td>
+        <td>Shifra</td>
+        <td>23/08/2026</td>
+      </tr>
+    </tbody>
+  </table>
+  <footer class="note">One "Progress" column (bar + %) instead of today's mix of bare badges and sub-badges scattered under the name cell.</footer>
+</div>
+
+<h2 class="page-title">5 — Prioritization: Ranked List w/ Drag Handle</h2>
+<div class="frame">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab">Daily Goals</div>
+      <div class="tab">Tasks</div>
+      <div class="tab active">Prioritization</div>
+      <div class="tab">Bugs</div>
+    </nav>
+  </header>
+
+  <div class="filter-row" style="padding-top:14px;">
+    <div class="chip active">All</div>
+    <div class="chip">High Priority</div>
+    <div class="chip">Overdue</div>
+  </div>
+
+  <div class="task-card" style="display:flex; gap:10px; align-items:flex-start;">
+    <div style="color:#aab; font-size:16px; line-height:1; padding-top:2px; cursor:grab;">⠿</div>
+    <div style="flex:1;">
+      <div class="task-card-top">
+        <div class="task-name">Update Specific Frameworks</div>
+        <div class="badge" style="background:#f4cccc;color:#990000;">1</div>
+      </div>
+      <div class="task-card-meta">
+        <div class="badge" style="background:#f4cccc;color:#990000;">Medium</div>
+        <span style="font-size:11.5px;color:#778;">LOE 20d · Task</span>
+      </div>
+      <div class="task-card-progress">
+        <div class="progress-track"><div class="progress-fill" style="width:59%"></div></div>
+        <div class="progress-pct">59%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-card" style="display:flex; gap:10px; align-items:flex-start;">
+    <div style="color:#aab; font-size:16px; line-height:1; padding-top:2px; cursor:grab;">⠿</div>
+    <div style="flex:1;">
+      <div class="task-card-top">
+        <div class="task-name">email tracking of site description</div>
+        <div class="badge" style="background:#fff2cc;color:#7f6000;">2</div>
+      </div>
+      <div class="task-card-meta">
+        <div class="badge" style="background:#f9cb9c;color:#7f4a00;">High Sev.</div>
+        <span style="font-size:11.5px;color:#778;">Bug · BEECHER</span>
+      </div>
+    </div>
+  </div>
+
+  <footer class="note">Drag handle for manual re-ranking; rank number replaces the plain row index so ordering intent is explicit.</footer>
+</div>
+
+<h2 class="page-title">6 — Recurring Tasks: Frequency Grouping</h2>
+<div class="frame">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab">Bugs</div>
+      <div class="tab active">Recurring</div>
+      <div class="tab">Checklists</div>
+      <div class="tab more">More ⋯</div>
+    </nav>
+  </header>
+
+  <div class="section-title">Daily <span style="font-size:11px;color:#98a;">3 tasks</span></div>
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Check regulatory alerts inbox</div>
+      <div class="badge" style="background:#d9ead3;color:#274e13;">Daily</div>
+    </div>
+    <div class="task-card-footer">
+      <span>Owner: Shifra</span>
+      <span>Done today ✓</span>
+    </div>
+  </div>
+
+  <div class="section-title">Weekly <span style="font-size:11px;color:#98a;">2 tasks</span></div>
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Review open bug backlog</div>
+      <div class="badge" style="background:#fff2cc;color:#7f6000;">Weekly</div>
+    </div>
+    <div class="task-card-footer">
+      <span>Owner: Shifra</span>
+      <span>Not done this week</span>
+    </div>
+  </div>
+
+  <footer class="note">Grouping by frequency (Daily/Weekly/Monthly) replaces one flat table, so today's "still need to do" items surface faster.</footer>
+</div>
+
+<h2 class="page-title">7 — Checklists: Template Library</h2>
+<div class="frame">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab">Recurring</div>
+      <div class="tab active">Checklists</div>
+      <div class="tab">Notebook</div>
+      <div class="tab more">More ⋯</div>
+    </nav>
+  </header>
+
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Reg Watch — New Framework Onboarding</div>
+      <div class="badge" style="background:#cfe2f3;color:#1155cc;">Team</div>
+    </div>
+    <div class="task-card-progress">
+      <div class="progress-track"><div class="progress-fill" style="width:36%"></div></div>
+      <div class="progress-pct">4/11</div>
+    </div>
+    <div class="task-card-footer">
+      <span>Used on 3 tasks</span>
+      <span>Owner: Shifra</span>
+    </div>
+  </div>
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Bug Triage Checklist</div>
+      <div class="badge" style="background:#f4cccc;color:#990000;">Private</div>
+    </div>
+    <div class="task-card-progress">
+      <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+      <div class="progress-pct">0/6</div>
+    </div>
+    <div class="task-card-footer">
+      <span>Not yet used</span>
+      <span>Owner: Shifra</span>
+    </div>
+  </div>
+
+  <footer class="note">Template cards show reuse count + fill status at a glance, instead of a name-only list.</footer>
+</div>
+
+<h2 class="page-title">8 — Notebook: Note Cards</h2>
+<div class="frame">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab">Checklists</div>
+      <div class="tab active">Notebook</div>
+      <div class="tab">More ⋯</div>
+    </nav>
+  </header>
+
+  <div class="filter-row" style="padding-top:14px;">
+    <div class="chip active">+ New Note</div>
+    <div class="chip">Private</div>
+    <div class="chip">Team</div>
+  </div>
+
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Vendor renewal contacts</div>
+      <div class="badge" style="background:#f4cccc;color:#990000;">Private</div>
+    </div>
+    <div style="font-size:12.5px; color:#556; margin-top:6px; line-height:1.5;">Beecher account rep is Dana K. — renewal window opens mid-Sept, ping before the 5th...</div>
+    <div class="task-card-footer">
+      <span>Edited 2h ago</span>
+      <span>Shifra</span>
+    </div>
+  </div>
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Reg watch dev — env notes</div>
+      <div class="badge" style="background:#cfe2f3;color:#1155cc;">Team</div>
+    </div>
+    <div style="font-size:12.5px; color:#556; margin-top:6px; line-height:1.5;">Staging creds rotate weekly, ask Ofir if the QA agent flow breaks after Monday deploys...</div>
+    <div class="task-card-footer">
+      <span>Edited yesterday</span>
+      <span>Shifra</span>
+    </div>
+  </div>
+
+  <footer class="note">Title + preview snippet per card, same free-text notes already stored — just easier to scan than an open textarea list.</footer>
+</div>
+
+<h2 class="page-title">9 — Daily Goals: Month View</h2>
+<div class="frame desktop">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab active">Daily Goals</div>
+      <div class="tab">Tasks</div>
+      <div class="tab">Prioritization</div>
+      <div class="tab">Bugs</div>
+    </nav>
+  </header>
+  <div class="section-title">
+    August 2026
+    <div class="toggle-pair"><span>Week</span><span class="active">Month</span></div>
+  </div>
+  <table class="mock-table">
+    <thead>
+      <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="vertical-align:top; height:56px;">
+          <div style="display:flex; justify-content:space-between;"><span>23</span><span class="badge" style="background:#d9ead3;color:#274e13;font-size:10px;">80%</span></div>
+        </td>
+        <td style="vertical-align:top;"><div style="display:flex; justify-content:space-between;"><span>24</span><span class="badge" style="background:#fff2cc;color:#7f6000;font-size:10px;">50%</span></div></td>
+        <td style="vertical-align:top;"><div style="display:flex; justify-content:space-between;"><span>25</span><span class="badge" style="background:#f4cccc;color:#990000;font-size:10px;">20%</span></div></td>
+        <td style="vertical-align:top; background:#eef4fa;"><div style="display:flex; justify-content:space-between;"><span><b>26</b></span><span class="badge" style="background:#fff2cc;color:#7f6000;font-size:10px;">40%</span></div></td>
+        <td style="vertical-align:top;"><div style="display:flex; justify-content:space-between;"><span>27</span><span class="badge" style="background:#eee;color:#999;font-size:10px;">—</span></div></td>
+        <td style="vertical-align:top;"><div style="display:flex; justify-content:space-between;"><span>28</span><span class="badge" style="background:#eee;color:#999;font-size:10px;">—</span></div></td>
+        <td style="vertical-align:top;"><div style="display:flex; justify-content:space-between;"><span>29</span><span class="badge" style="background:#eee;color:#999;font-size:10px;">—</span></div></td>
+      </tr>
+    </tbody>
+  </table>
+  <footer class="note">Same badge already added to each day cell — shown here inside the full calendar grid context for reference.</footer>
+</div>
+
+<h2 class="page-title">10 — Weekly Summary: At-a-Glance Report</h2>
+<div class="frame">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab">Bugs</div>
+      <div class="tab active">Weekly Summary</div>
+      <div class="tab more">More ⋯</div>
+    </nav>
+  </header>
+
+  <div class="dashboard">
+    <div class="stat-card">
+      <div class="stat-label">Items Done</div>
+      <div class="stat-value small">18/34</div>
+      <div class="mini-track"><div class="mini-fill" style="width:53%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">New Bugs</div>
+      <div class="stat-value small">4</div>
+      <div class="mini-track"><div class="mini-fill red" style="width:40%"></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Highlights</div>
+  <div class="task-card">
+    <div style="font-size:12.5px; color:#445; line-height:1.6;">
+      ✅ &nbsp;3 recurring tasks completed every day this week<br/>
+      ⚠️ &nbsp;2 tasks now overdue: <b>QA the new ai agent</b>, <b>Track beecher bugs</b><br/>
+      🐞 &nbsp;4 new bugs logged, 1 closed
+    </div>
+  </div>
+
+  <footer class="note">Auto-generated recap card instead of scanning every table manually at week's end.</footer>
+</div>
+
+<h2 class="page-title">11 — Settings: Dropdown Options + Activity Log (tabbed)</h2>
+<div class="frame">
+  <header>
+    <div class="top-row">
+      <div class="brand">Task Manager</div>
+      <div class="user-chip">Shifra ▾</div>
+    </div>
+    <nav class="tabs">
+      <div class="tab">Notebook</div>
+      <div class="tab active">Settings</div>
+    </nav>
+  </header>
+
+  <div class="section-title">
+    Settings
+    <div class="toggle-pair"><span class="active">Dropdown Options</span><span>Activity Log</span></div>
+  </div>
+
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Task Type</div>
+    </div>
+    <div class="filter-row" style="padding:8px 0 0;">
+      <div class="chip">Regular</div>
+      <div class="chip">QA</div>
+      <div class="chip">Urgent</div>
+      <div class="chip" style="background:#fff; border-style:dashed;">+ Add</div>
+    </div>
+  </div>
+  <div class="task-card">
+    <div class="task-card-top">
+      <div class="task-name">Bug Severity</div>
+    </div>
+    <div class="filter-row" style="padding:8px 0 0;">
+      <div class="chip">Low</div>
+      <div class="chip">Medium</div>
+      <div class="chip">High</div>
+      <div class="chip" style="background:#fff; border-style:dashed;">+ Add</div>
+    </div>
+  </div>
+
+  <footer class="note">Grouping the two low-traffic admin pages under one "Settings" tab (with a sub-toggle) frees up a slot in the main nav bar.</footer>
+</div>
+
+</body>
+</html>
